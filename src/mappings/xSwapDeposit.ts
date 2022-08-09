@@ -1,10 +1,4 @@
 import {
-    AddLiquidity,
-    RemoveLiquidity,
-    RemoveLiquidityOne,
-    TokenExchange as TokenSwap,
-} from '../../generated/JPYCmetapoolDeposit/XSwapDeposit'
-import {
     AddLiquidityEventData,
     Exchange,
     RemoveLiquidityEventData,
