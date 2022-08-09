@@ -1,0 +1,287 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "Uint8Array",
+        "name": "recipient",
+        "type": "Uint8Array"
+      },
+      {
+        "indexed": false,
+        "internalType": "Uint8Array",
+        "name": "gauge",
+        "type": "Uint8Array"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minted",
+        "type": "uint256"
+      }
+    ],
+    "name": "Minted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "Uint8Array",
+        "name": "previousOwner",
+        "type": "Uint8Array"
+      },
+      {
+        "indexed": true,
+        "internalType": "Uint8Array",
+        "name": "newOwner",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "Uint8Array",
+        "name": "account",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "Uint8Array",
+        "name": "account",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "_token",
+        "type": "Uint8Array"
+      },
+      {
+        "internalType": "Uint8Array",
+        "name": "_controller",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "__Minter_init",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      },
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "allowedToMintFor",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "controller",
+    "outputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "_gaugeAddr",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "_gaugeAddr",
+        "type": "Uint8Array"
+      },
+      {
+        "internalType": "Uint8Array",
+        "name": "_for",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "mintFor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array[8]",
+        "name": "_gaugeAddrs",
+        "type": "Uint8Array[8]"
+      }
+    ],
+    "name": "mintMany",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      },
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "minted",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "_mintingUser",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "toggleApproveMint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "token",
+    "outputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "",
+        "type": "Uint8Array"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "Uint8Array",
+        "name": "newOwner",
+        "type": "Uint8Array"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
