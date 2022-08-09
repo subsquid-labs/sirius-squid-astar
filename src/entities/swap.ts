@@ -37,49 +37,47 @@ interface SwapInfo {
     lpToken: string
 }
 
-export async function getOrCreateSwap(
-    store: Store,
-    address: Uint8Array,
-    block: ethereum.Block,
-    tx: ethereum.Transaction
-): Promise<Swap> {
-    let swap = await store.get(Swap, toHex(address))
+export async function getOrCreateSwap(ctx: EvmLogHandlerContext<Store>): Promise<Swap> {
+    const address = ctx.event.args.address
+
+    let swap = await ctx.store.get(Swap, address)
 
     if (swap == null) {
-        let info = getSwapInfo(address)
+        let info = await getSwapInfo(ctx, address)
 
-        swap = new Swap({ id: toHex(address) })
-        swap.address = address
-        swap.baseSwapUint8Array = info.baseSwapUint8Array
+        swap = new Swap({ id: address })
+        swap.address = decodeHex(address)
+        swap.baseSwapAddress = decodeHex(info.baseSwapAddress)
         swap.numTokens = info.tokens.length
-        swap.tokens = registerTokens(ctx, info.tokens)
-        swap.baseTokens = registerBaseTokens(info.baseTokens, block, tx)
-        swap.allTokens = registerAllTokens(info.allTokens, block, tx)
+        swap.tokens = (await registerTokens(ctx, info.tokens)).map((t) => new TokenObject(t))
+        swap.baseTokens = (await registerTokens(ctx, info.baseTokens)).map((t) => new TokenObject(t))
+        swap.allTokens = (await registerTokens(ctx, info.allTokens)).map((t) => new TokenObject(t))
         swap.balances = info.balances
-        swap.lpToken = info.lpToken
+        swap.lpToken = decodeHex(info.lpToken)
 
-        swap.a = info.A
+        swap.a = info.a
 
         swap.swapFee = info.swapFee
         swap.adminFee = info.adminFee
 
         swap.virtualPrice = info.virtualPrice
 
-        swap.owner = info.owner
+        swap.owner = decodeHex(info.owner)
 
-        swap.TVL = BigDecimal('0')
-        swap.APY = BigDecimal.fromString('0')
+        swap.tvl = BigDecimal(0).toString()
+        swap.apy = BigDecimal(0).toString()
 
-        swap.save()
+        await ctx.store.save(swap)
 
-        let system = getSystemInfo(block, tx)
-        system.swapCount = system.swapCount.plus(bigint.fromI32(1))
-        system.save()
+        let system = await getSystemInfo(ctx)
+        system.swapCount += 1n
+        await ctx.store.save(system)
     }
 
     return swap as Swap
 }
 
+// TODO refactor
 // Gets poll info from swap contract
 export async function getSwapInfo(swap: Uint8Array): SwapInfo {
     let swapContract = new SwapNormal.Contract()
@@ -122,16 +120,17 @@ export async function getSwapInfo(swap: Uint8Array): SwapInfo {
     }
 }
 
-export function getBalances(swap: Uint8Array, N_COINS: number): bigint[] {
-    let swapContract = SwapNormal.bind(swap)
-    let balances = new Array<bigint>(<i32>N_COINS)
+export async function getBalancesSwap(ctx: EvmLogHandlerContext<Store>, swap: string, N_COINS: number): Promise<bigint[]> {
+    let swapContract = new SwapNormal.Contract(ctx, swap)
+    let balances: bigint[] = new Array(N_COINS)
 
     for (let i = 0; i < N_COINS; ++i) {
-        balances[i] = swapContract.getTokenBalance(i)
+        balances[i] = (await swapContract.getTokenBalance(i)).toBigInt()
     }
 
     return balances
 }
+
 
 export async function getOrCreateMetaSwap(ctx: EvmLogHandlerContext<Store>): Promise<Swap> {
     const address = ctx.event.args.address
