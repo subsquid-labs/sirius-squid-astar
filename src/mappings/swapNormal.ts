@@ -1,473 +1,496 @@
 import {
-    AddLiquidity,
-    NewAdminFee,
-    NewSwapFee,
-    NewWithdrawFee,
-    RampA,
-    RemoveLiquidity,
-    RemoveLiquidityImbalance,
-    RemoveLiquidityOne,
-    StopRampA,
-    TokenSwap,
-} from '../../generated/SiriusUSDPool/SwapNormal'
-import {
-    AddLiquidityEvent,
-    NewAdminFeeEvent,
-    NewSwapFeeEvent,
-    NewWithdrawFeeEvent,
-    RampAEvent,
-    RemoveLiquidityEvent,
-    StopRampAEvent,
-    TokenExchange,
+    AddLiquidityEventData, Exchange,
+    NewAdminFeeEventData,
+    NewSwapFeeEventData,
+    RampAEventData,
+    RemoveLiquidityEventData,
+    StopRampAEventData,
+    SwapEvent,
+    TokenExchangeData,
 } from '../model'
-import { Uint8Array, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { getBalances, getOrCreateAirdropee, getOrCreateSwap } from '../entities/swap'
+import { Big as BigDecimal } from 'big.js'
+import {
+    getBalancesSwap,
+    getBalancesMetaSwap,
+    getOrCreateAirdropee,
+    getOrCreateMetaSwap,
+    getOrCreateSwap,
+} from '../entities/swap'
 import { getDailyTradeVolume, getHourlyTradeVolume, getWeeklyTradeVolume } from '../entities/volume'
 import { getDailyPoolTvl } from '../entities/tvl'
 
-import { decimal } from '@protofire/subgraph-toolkit'
 import { getOrCreateToken } from '../entities/token'
 import { getSystemInfo } from '../entities/system'
+import { decodeHex, EvmLogHandlerContext, toHex } from '@subsquid/substrate-processor'
+import { Store } from '@subsquid/typeorm-store'
+import * as SwapNormal from '../abi/SwapNormal'
 
-export function handleNewAdminFee(event: NewAdminFee): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    swap.adminFee = event.params.newAdminFee
-    swap.save()
+export async function handleNewAdminFee(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
 
-    let log = new NewAdminFeeEvent('new_admin_fee-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['NewAdminFee(uint256)'].decode(ctx.event.args)
+    swap.adminFee = event.newAdminFee.toBigInt()
+    await ctx.store.save(swap)
 
-    log.swap = swap.id
-    log.newFee = event.params.newAdminFee
+    let log = new SwapEvent({ id: 'new_admin_fee-' + ctx.event.evmTxHash })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new NewAdminFeeEventData()
+    log.data.newFee = event.newAdminFee.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 }
 
-export function handleNewSwapFee(event: NewSwapFee): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    swap.swapFee = event.params.newSwapFee
-    swap.save()
+export async function handleNewSwapFee(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
 
-    let log = new NewSwapFeeEvent('new_swap_fee-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['NewSwapFee(uint256)'].decode(ctx.event.args)
+    swap.swapFee = event.newSwapFee.toBigInt()
+    await ctx.store.save(swap)
 
-    log.swap = swap.id
-    log.newFee = event.params.newSwapFee
+    let log = new SwapEvent({ id: 'new_swap_fee-' + ctx.event.evmTxHash })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new NewSwapFeeEventData()
+    log.data.newFee = event.newSwapFee.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 }
 
-export function handleNewWithdrawFee(event: NewWithdrawFee): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    swap.withdrawFee = event.params.newWithdrawFee
-    swap.save()
+export async function handleNewWithdrawFee(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
 
-    let log = new NewWithdrawFeeEvent('new_withdraw_fee-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['NewWithdrawFee(uint256)'].decode(ctx.event.args)
+    swap.withdrawFee = event.newWithdrawFee.toBigInt()
+    await ctx.store.save(swap)
 
-    log.swap = swap.id
-    log.newFee = event.params.newWithdrawFee
+    // let log = new NewWithdrawFeeEvent('new_withdraw_fee-' + event.transaction.hash.toHexString())
+    let log = new SwapEvent({ id: 'new_withdraw_fee-' + ctx.event.evmTxHash })
+    log.swap = swap
+    // log.newFee = event.newWithdrawFee
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
 
-    log.save()
+    await ctx.store.save(log)
 }
 
-export function handleRampA(event: RampA): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
+export async function handleRampA(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
 
-    let log = new RampAEvent('ramp_A-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['RampA(uint256,uint256,uint256,uint256)'].decode(ctx.event.args)
 
-    log.swap = swap.id
-    log.oldA = event.params.oldA
-    log.newA = event.params.newA
-    log.initialTime = event.params.initialTime
-    log.futureTime = event.params.futureTime
+    let log = new SwapEvent({ id: 'ramp_A-' + ctx.event.evmTxHash })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new RampAEventData()
+    log.data.oldA = event.oldA.toBigInt()
+    log.data.newA = event.newA.toBigInt()
+    log.data.initialTime = event.initialTime.toBigInt()
+    log.data.futureTime = event.futureTime.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 }
 
-export function handleStopRampA(event: StopRampA): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    swap.A = event.params.currentA
-    swap.save()
+export async function handleStopRampA(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
 
-    let log = new StopRampAEvent('stop_ramp_A-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['StopRampA(uint256,uint256)'].decode(ctx.event.args)
+    swap.a = event.currentA.toBigInt()
+    await ctx.store.save(swap)
 
-    log.swap = swap.id
-    log.currentA = event.params.currentA
-    log.time = event.params.time
+    let log = new SwapEvent({ id: 'stop_ramp_A-' + ctx.event.evmTxHash })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new StopRampAEventData()
+    log.data.currentA = event.currentA.toBigInt()
+    log.data.time = event.time.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 }
 
-export function handleAddLiquidity(event: AddLiquidity): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    let balances = getBalances(event.Uint8Array, swap.numTokens)
+export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
+    let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
     // update TVL
     let tokens = swap.tokens
-    let tvl: BigDecimal = BigDecimal.fromString('0')
+    let tvl: BigDecimal = BigDecimal('0')
     for (let i = 0; i < swap.tokens.length; i++) {
-        let token = getOrCreateToken(Uint8Array.fromString(tokens[i]), event.block, event.transaction)
+        let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
-            let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = decimal.fromBigInt(balance, token.decimals.toI32())
+            let balance = balances[i]
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
             tvl = tvl.plus(balanceDecimal)
         }
     }
-    swap.TVL = tvl
+    swap.tvl = tvl.toFixed()
 
-    let dailyTvl = getDailyPoolTvl(swap, event.block.timestamp)
-    dailyTvl.tvl = tvl
-    dailyTvl.save()
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    dailyTvl.tvl = tvl.toFixed()
+    await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = getDailyTradeVolume(swap, event.block.timestamp)
-    let dailyTotalSwapFees = dailyVolume.volume
-        .times(swap.swapFee.toBigDecimal())
-        .div(BigDecimal.fromString('10000000000'))
-    let apy: BigDecimal = decimal.ZERO
-    if (tvl.notEqual(decimal.ZERO)) {
-        apy = dailyTotalSwapFees.div(tvl).times(BigDecimal.fromString('365'))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
+    let apy: BigDecimal = BigDecimal('0')
+    if (!tvl.eq(BigDecimal('0'))) {
+        apy = dailyTotalSwapFees.div(tvl).times('365')
     }
-    swap.APY = apy
+    swap.apy = apy.toFixed()
 
-    swap.save()
+    await ctx.store.save(swap)
 
-    let log = new AddLiquidityEvent('add_liquidity-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['AddLiquidity(address,uint256[],uint256[],uint256,uint256)'].decode(ctx.event.args)
 
-    log.swap = swap.id
-    log.provider = event.params.provider
-    log.tokenAmounts = event.params.tokenAmounts
-    log.fees = event.params.fees
-    log.invariant = event.params.invariant
-    log.lpTokenSupply = event.params.lpTokenSupply
+    let log = new SwapEvent({ id: 'add_liquidity-' + ctx.event.evmTxHash })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new AddLiquidityEventData()
+    log.data.provider = decodeHex(event.provider)
+    log.data.tokenAmounts = event.tokenAmounts.map((a) => a.toBigInt())
+    log.data.fees = event.fees.map((f) => f.toBigInt())
+    log.data.invariant = event.invariant.toBigInt()
+    log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 
     // Tuesday, March 29, 2022 12:00:00 PM
-    if (event.block.timestamp < BigInt.fromI32(1648555200)) {
-        let airdropee = getOrCreateAirdropee(event.Uint8Array, event.block, event.transaction)
-        airdropee.count = airdropee.count.plus(BigInt.fromI32(1))
-        airdropee.addLiquidityCount = airdropee.addLiquidityCount.plus(BigInt.fromI32(1))
-
-        airdropee.updated = event.block.timestamp
-        airdropee.updatedAtBlock = event.block.number
-        airdropee.updatedAtTransaction = event.transaction.hash
-        airdropee.save()
+    if (ctx.block.timestamp < 1648555200) {
+        let airdropee = await getOrCreateAirdropee(ctx, event.provider)
+        airdropee.count += 1n
+        airdropee.addLiquidityCount += 1n
+        airdropee.updated = BigInt(ctx.block.timestamp)
+        airdropee.updatedAtBlock = BigInt(ctx.block.height)
+        airdropee.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
+        await ctx.store.save(airdropee)
     }
 }
 
-export function handleRemoveLiquidity(event: RemoveLiquidity): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    let balances = getBalances(event.Uint8Array, swap.numTokens)
+export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
+    let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
     // update TVL
     let tokens = swap.tokens
-    let tvl: BigDecimal = BigDecimal.fromString('0')
+    let tvl: BigDecimal = BigDecimal('0')
     for (let i = 0; i < swap.tokens.length; i++) {
-        let token = getOrCreateToken(Uint8Array.fromString(tokens[i]), event.block, event.transaction)
+        let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
-            let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = decimal.fromBigInt(balance, token.decimals.toI32())
+            let balance = balances[i]
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
             tvl = tvl.plus(balanceDecimal)
         }
     }
-    swap.TVL = tvl
+    swap.tvl = tvl.toFixed()
 
-    let dailyTvl = getDailyPoolTvl(swap, event.block.timestamp)
-    dailyTvl.tvl = tvl
-    dailyTvl.save()
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    dailyTvl.tvl = tvl.toFixed()
+    await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = getDailyTradeVolume(swap, event.block.timestamp)
-    let dailyTotalSwapFees = dailyVolume.volume
-        .times(swap.swapFee.toBigDecimal())
-        .div(BigDecimal.fromString('10000000000'))
-    let apy: BigDecimal = decimal.ZERO
-    if (tvl.notEqual(decimal.ZERO)) {
-        apy = dailyTotalSwapFees.div(tvl).times(BigDecimal.fromString('365'))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
+    let apy: BigDecimal = BigDecimal('0')
+    if (!tvl.eq(BigDecimal('0'))) {
+        apy = dailyTotalSwapFees.div(tvl).times('365')
     }
-    swap.APY = apy
+    swap.apy = apy.toFixed()
 
-    swap.save()
+    await ctx.store.save(swap)
 
-    let log = new RemoveLiquidityEvent('remove_liquidity-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['RemoveLiquidity(address,uint256[],uint256)'].decode(ctx.event.args)
 
-    log.swap = swap.id
-    log.provider = event.params.provider
-    log.tokenAmounts = event.params.tokenAmounts
-    log.lpTokenSupply = event.params.lpTokenSupply
+    let log = new SwapEvent({ id: 'remove_liquidity-' + ctx.event.evmTxHash })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new RemoveLiquidityEventData()
+    log.data.provider = decodeHex(event.provider)
+    log.data.tokenAmounts = event.tokenAmounts.map((a) => a.toBigInt())
+    log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 
     // Tuesday, March 29, 2022 12:00:00 PM
-    if (event.block.timestamp < BigInt.fromI32(1648555200)) {
-        let airdropee = getOrCreateAirdropee(event.Uint8Array, event.block, event.transaction)
-        airdropee.count = airdropee.count.plus(BigInt.fromI32(1))
-        airdropee.removeLiquidityCount = airdropee.removeLiquidityCount.plus(BigInt.fromI32(1))
-
-        airdropee.updated = event.block.timestamp
-        airdropee.updatedAtBlock = event.block.number
-        airdropee.updatedAtTransaction = event.transaction.hash
-        airdropee.save()
+    if (ctx.block.timestamp < 1648555200) {
+        let airdropee = await getOrCreateAirdropee(ctx, event.provider)
+        airdropee.count += 1n
+        airdropee.removeLiquidityCount += 1n
+        airdropee.updated = BigInt(ctx.block.timestamp)
+        airdropee.updatedAtBlock = BigInt(ctx.block.height)
+        airdropee.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
+        await ctx.store.save(airdropee)
     }
 }
 
-export function handleRemoveLiquidityOne(event: RemoveLiquidityOne): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    let balances = getBalances(event.Uint8Array, swap.numTokens)
+export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
+    let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
     // update TVL
     let tokens = swap.tokens
-    let tvl: BigDecimal = BigDecimal.fromString('0')
+    let tvl: BigDecimal = BigDecimal('0')
     for (let i = 0; i < swap.tokens.length; i++) {
-        let token = getOrCreateToken(Uint8Array.fromString(tokens[i]), event.block, event.transaction)
+        let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
-            let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = decimal.fromBigInt(balance, token.decimals.toI32())
+            let balance = balances[i]
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
             tvl = tvl.plus(balanceDecimal)
         }
     }
-    swap.TVL = tvl
+    swap.tvl = tvl.toFixed()
 
-    let dailyTvl = getDailyPoolTvl(swap, event.block.timestamp)
-    dailyTvl.tvl = tvl
-    dailyTvl.save()
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    dailyTvl.tvl = tvl.toFixed()
+    await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = getDailyTradeVolume(swap, event.block.timestamp)
-    let dailyTotalSwapFees = dailyVolume.volume
-        .times(swap.swapFee.toBigDecimal())
-        .div(BigDecimal.fromString('10000000000'))
-    let apy: BigDecimal = decimal.ZERO
-    if (tvl.notEqual(decimal.ZERO)) {
-        apy = dailyTotalSwapFees.div(tvl).times(BigDecimal.fromString('365'))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
+    let apy: BigDecimal = BigDecimal('0')
+    if (!tvl.eq(BigDecimal('0'))) {
+        apy = dailyTotalSwapFees.div(tvl).times('365')
     }
-    swap.APY = apy
+    swap.apy = apy.toFixed()
 
-    swap.save()
+    await ctx.store.save(swap)
 
-    let log = new RemoveLiquidityEvent('remove_liquidity_one-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)'].decode(
+        ctx.event.args
+    )
 
-    let tokenAmounts: BigInt[] = []
+    let log = new SwapEvent({
+        id: 'remove_liquidity_one-' + ctx.event.evmTxHash,
+    })
+
+    let tokenAmounts: bigint[] = []
     for (let i = 0; i < swap.numTokens; i++) {
-        if (i === parseInt(event.params.boughtId.toString())) {
-            tokenAmounts.push(event.params.tokensBought)
+        if (i === event.boughtId.toNumber()) {
+            tokenAmounts.push(event.tokensBought.toBigInt())
         } else {
-            tokenAmounts.push(BigInt.fromI32(0))
+            tokenAmounts.push(0n)
         }
     }
 
-    log.swap = swap.id
-    log.provider = event.params.provider
-    log.tokenAmounts = tokenAmounts
-    log.lpTokenSupply = event.params.lpTokenSupply
+    log.swap = swap
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.data = new RemoveLiquidityEventData()
+    log.data.provider = decodeHex(event.provider)
+    log.data.tokenAmounts = tokenAmounts
+    log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
 
-    log.save()
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 
     // Tuesday, March 29, 2022 12:00:00 PM
-    if (event.block.timestamp < BigInt.fromI32(1648555200)) {
-        let airdropee = getOrCreateAirdropee(event.Uint8Array, event.block, event.transaction)
-        airdropee.count = airdropee.count.plus(BigInt.fromI32(1))
-        airdropee.removeLiquidityOneCount = airdropee.removeLiquidityOneCount.plus(BigInt.fromI32(1))
-
-        airdropee.updated = event.block.timestamp
-        airdropee.updatedAtBlock = event.block.number
-        airdropee.updatedAtTransaction = event.transaction.hash
-        airdropee.save()
+    if (ctx.block.height < 1648555200) {
+        let airdropee = await getOrCreateAirdropee(ctx, event.provider)
+        airdropee.count += 1n
+        airdropee.removeLiquidityOneCount += 1n
+        airdropee.updated = BigInt(ctx.block.timestamp)
+        airdropee.updatedAtBlock = BigInt(ctx.block.height)
+        airdropee.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
+        await ctx.store.save(airdropee)
     }
 }
 
-export function handleRemoveLiquidityImbalance(event: RemoveLiquidityImbalance): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    let balances = getBalances(event.Uint8Array, swap.numTokens)
+export async function handleRemoveLiquidityImbalance(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
+    let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
     // update TVL
     let tokens = swap.tokens
-    let tvl: BigDecimal = BigDecimal.fromString('0')
+    let tvl: BigDecimal = BigDecimal('0')
     for (let i = 0; i < swap.tokens.length; i++) {
-        let token = getOrCreateToken(Uint8Array.fromString(tokens[i]), event.block, event.transaction)
+        let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
-            let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = decimal.fromBigInt(balance, token.decimals.toI32())
+            let balance = balances[i]
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
             tvl = tvl.plus(balanceDecimal)
         }
     }
-    swap.TVL = tvl
+    swap.tvl = tvl.toFixed()
 
-    let dailyTvl = getDailyPoolTvl(swap, event.block.timestamp)
-    dailyTvl.tvl = tvl
-    dailyTvl.save()
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    dailyTvl.tvl = tvl.toFixed()
+    await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = getDailyTradeVolume(swap, event.block.timestamp)
-    let dailyTotalSwapFees = dailyVolume.volume
-        .times(swap.swapFee.toBigDecimal())
-        .div(BigDecimal.fromString('10000000000'))
-    let apy: BigDecimal = decimal.ZERO
-    if (tvl.notEqual(decimal.ZERO)) {
-        apy = dailyTotalSwapFees.div(tvl).times(BigDecimal.fromString('365'))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
+    let apy: BigDecimal = BigDecimal('0')
+    if (!tvl.eq(BigDecimal('0'))) {
+        apy = dailyTotalSwapFees.div(tvl).times('365')
     }
-    swap.APY = apy
+    swap.apy = apy.toFixed()
 
-    swap.save()
+    await ctx.store.save(swap)
 
-    let log = new RemoveLiquidityEvent('remove_liquidity_imbalance-' + event.transaction.hash.toHexString())
+    const event = SwapNormal.events['RemoveLiquidityImbalance(address,uint256[],uint256[],uint256,uint256)'].decode(
+        ctx.event.args
+    )
 
-    log.swap = swap.id
-    log.provider = event.params.provider
-    log.tokenAmounts = event.params.tokenAmounts
-    log.fees = event.params.fees
-    log.invariant = event.params.invariant
-    log.lpTokenSupply = event.params.lpTokenSupply
+    let log = new SwapEvent({
+        id: 'remove_liquidity_imbalance-' + ctx.event.evmTxHash,
+    })
 
-    log.block = event.block.number
-    log.timestamp = event.block.timestamp
-    log.transaction = event.transaction.hash
+    log.swap = swap
 
-    log.save()
+    log.data = new RemoveLiquidityEventData()
+    log.data.provider = decodeHex(event.provider)
+    log.data.tokenAmounts = event.tokenAmounts.map((a) => a.toBigInt())
+    log.data.fees = event.fees.map((f) => f.toBigInt())
+    log.data.invariant = event.invariant.toBigInt()
+    log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
+
+    log.block = BigInt(ctx.block.height)
+    log.timestamp = BigInt(ctx.block.timestamp)
+    log.transaction = decodeHex(ctx.event.evmTxHash)
+
+    await ctx.store.save(log)
 
     // Tuesday, March 29, 2022 12:00:00 PM
-    if (event.block.timestamp < BigInt.fromI32(1648555200)) {
-        let airdropee = getOrCreateAirdropee(event.Uint8Array, event.block, event.transaction)
-        airdropee.count = airdropee.count.plus(BigInt.fromI32(1))
-        airdropee.removeLiquidityImbalanceCount = airdropee.removeLiquidityImbalanceCount.plus(BigInt.fromI32(1))
-
-        airdropee.updated = event.block.timestamp
-        airdropee.updatedAtBlock = event.block.number
-        airdropee.updatedAtTransaction = event.transaction.hash
-        airdropee.save()
+    if (ctx.block.height < 1648555200) {
+        let airdropee = await getOrCreateAirdropee(ctx, event.provider)
+        airdropee.count += 1n
+        airdropee.removeLiquidityImbalanceCount += 1n
+        airdropee.updated = BigInt(ctx.block.timestamp)
+        airdropee.updatedAtBlock = BigInt(ctx.block.height)
+        airdropee.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
+        await ctx.store.save(airdropee)
     }
 }
 
-export function handleTokenSwap(event: TokenSwap): void {
-    let swap = getOrCreateSwap(event.Uint8Array, event.block, event.transaction)
-    let balances = getBalances(event.Uint8Array, swap.numTokens)
+export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise<void> {
+    let swap = await getOrCreateSwap(ctx)
+    let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
-    swap.save()
+    await ctx.store.save(swap)
+
+    const event = SwapNormal.events['TokenSwap(address,uint256,uint256,uint128,uint128)'].decode(ctx.event.args)
 
     if (swap != null) {
-        let exchange = new TokenExchange('token_exchange-' + event.transaction.hash.toHexString())
+        let exchange = new Exchange({
+            id: 'token_exchange-' + ctx.event.evmTxHash,
+        })
 
-        exchange.swap = swap.id
-        exchange.buyer = event.params.buyer
-        exchange.soldId = event.params.soldId
-        exchange.tokensSold = event.params.tokensSold
-        exchange.boughtId = event.params.boughtId
-        exchange.tokensBought = event.params.tokensBought
+        exchange.swap = swap
 
-        exchange.block = event.block.number
-        exchange.timestamp = event.block.timestamp
-        exchange.transaction = event.transaction.hash
+        exchange.data = new TokenExchangeData()
+        exchange.data.buyer = decodeHex(event.buyer)
+        exchange.data.soldId = event.soldId.toBigInt()
+        exchange.data.tokensSold = event.tokensSold.toBigInt()
+        exchange.data.boughtId = event.boughtId.toBigInt()
+        exchange.data.tokensBought = event.tokensBought.toBigInt()
 
-        exchange.save()
+        exchange.block = BigInt(ctx.block.height)
+        exchange.timestamp = BigInt(ctx.block.timestamp)
+        exchange.transaction = decodeHex(ctx.event.evmTxHash)
+
+        await ctx.store.save(exchange)
 
         // save trade volume
         let tokens = swap.tokens
-        if (event.params.soldId.toI32() < tokens.length && event.params.boughtId.toI32() < tokens.length) {
-            let soldToken = getOrCreateToken(
-                Uint8Array.fromString(tokens[event.params.soldId.toI32()]),
-                event.block,
-                event.transaction
-            )
-            let sellVolume = decimal.fromBigInt(event.params.tokensSold, soldToken.decimals.toI32())
-            let boughtToken = getOrCreateToken(
-                Uint8Array.fromString(tokens[event.params.boughtId.toI32()]),
-                event.block,
-                event.transaction
-            )
-            let buyVolume = decimal.fromBigInt(event.params.tokensBought, boughtToken.decimals.toI32())
-            let volume = sellVolume.plus(buyVolume).div(decimal.TWO)
+        if (event.soldId.toNumber() < tokens.length && event.boughtId.toNumber() < tokens.length) {
+            let soldToken = await getOrCreateToken(ctx, toHex(tokens[event.soldId.toNumber()].address))
+            let sellVolume = BigDecimal(event.tokensSold.toString()).div(soldToken.decimals.toString())
+            let boughtToken = await getOrCreateToken(ctx, toHex(tokens[event.boughtId.toNumber()].address))
+            let buyVolume = BigDecimal(event.tokensBought.toString()).div(boughtToken.decimals.toString())
+            let volume = sellVolume.plus(buyVolume).div(2)
 
-            let hourlyVolume = getHourlyTradeVolume(swap, event.block.timestamp)
-            hourlyVolume.volume = hourlyVolume.volume.plus(volume)
-            hourlyVolume.save()
+            let hourlyVolume = await getHourlyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+            hourlyVolume.volume = BigDecimal(hourlyVolume.volume).plus(volume).toFixed()
+            await ctx.store.save(hourlyVolume)
 
-            let dailyVolume = getDailyTradeVolume(swap, event.block.timestamp)
-            dailyVolume.volume = dailyVolume.volume.plus(volume)
-            dailyVolume.save()
+            let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+            dailyVolume.volume = BigDecimal(dailyVolume.volume).plus(volume).toFixed()
+            await ctx.store.save(dailyVolume)
 
-            let weeklyVolume = getWeeklyTradeVolume(swap, event.block.timestamp)
-            weeklyVolume.volume = weeklyVolume.volume.plus(volume)
-            weeklyVolume.save()
+            let weeklyVolume = await getWeeklyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+            weeklyVolume.volume = BigDecimal(weeklyVolume.volume).plus(volume).toFixed()
+            await ctx.store.save(weeklyVolume)
 
             // update TVL
-            let tvl: BigDecimal = BigDecimal.fromString('0')
+            let tvl: BigDecimal = BigDecimal('0')
             for (let i = 0; i < swap.tokens.length; i++) {
-                let token = getOrCreateToken(Uint8Array.fromString(tokens[i]), event.block, event.transaction)
+                let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
                 if (token !== null) {
                     let balance: BigInt = balances[i]
-                    let balanceDecimal: BigDecimal = decimal.fromBigInt(balance, token.decimals.toI32())
+                    let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
                     tvl = tvl.plus(balanceDecimal)
                 }
             }
-            swap.TVL = tvl
+            swap.tvl = tvl.toFixed()
 
-            let dailyTvl = getDailyPoolTvl(swap, event.block.timestamp)
-            dailyTvl.tvl = tvl
-            dailyTvl.save()
+            let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+            dailyTvl.tvl = tvl.toFixed()
+            await ctx.store.save(dailyTvl)
 
             // update APY
-            let dailyTotalSwapFees = dailyVolume.volume
-                .times(swap.swapFee.toBigDecimal())
-                .div(BigDecimal.fromString('10000000000'))
-            let apy: BigDecimal = decimal.ZERO
-            if (tvl.notEqual(decimal.ZERO)) {
-                apy = dailyTotalSwapFees.div(tvl).times(BigDecimal.fromString('365'))
+            let dailyTotalSwapFees = BigDecimal(dailyVolume.volume)
+                .times(swap.swapFee.toString())
+                .div(BigDecimal('10000000000'))
+            let apy: BigDecimal = BigDecimal(0)
+            if (!tvl.eq(BigDecimal(0))) {
+                apy = dailyTotalSwapFees.div(tvl).times(BigDecimal('365'))
             }
-            swap.APY = apy
+            swap.apy = apy.toFixed()
 
-            swap.save()
+            await ctx.store.save(swap)
         }
 
         // update system
-        let system = getSystemInfo(event.block, event.transaction)
-        system.exchangeCount = system.exchangeCount.plus(BigInt.fromI32(1))
-        system.save()
+        let system = await getSystemInfo(ctx)
+        system.exchangeCount += 1n
+        await ctx.store.save(system)
     }
 
     // Tuesday, March 29, 2022 12:00:00 PM
-    if (event.block.timestamp < BigInt.fromI32(1648555200)) {
-        let airdropee = getOrCreateAirdropee(event.Uint8Array, event.block, event.transaction)
-        airdropee.count = airdropee.count.plus(BigInt.fromI32(1))
-        airdropee.swapCount = airdropee.swapCount.plus(BigInt.fromI32(1))
-
-        airdropee.updated = event.block.timestamp
-        airdropee.updatedAtBlock = event.block.number
-        airdropee.updatedAtTransaction = event.transaction.hash
-        airdropee.save()
+    if (ctx.block.height < 1648555200) {
+        let airdropee = await getOrCreateAirdropee(ctx, event.buyer) // TODO check correctness of usage "event.buyer"
+        airdropee.count += 1n
+        airdropee.swapCount += 1n
+        airdropee.updated = BigInt(ctx.block.timestamp)
+        airdropee.updatedAtBlock = BigInt(ctx.block.height)
+        airdropee.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
+        await ctx.store.save(airdropee)
     }
 }

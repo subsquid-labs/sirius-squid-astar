@@ -14,6 +14,7 @@ import { CHAIN_NODE, contractUint8Array, getContractEntity } from './contract'
 import { Owner, Token, Transfer } from './model'
 import * as SwapNormal from './abi/SwapNormal'
 import { handleNewAdminFee, handleNewSwapFee } from './mappings/metaSwap'
+import {handleNewWithdrawFee} from "./mappings/swapNormal";
 
 const Sirius4Pool = '0x417E9d065ee22DFB7CC6C63C403600E27627F333'
 
@@ -43,7 +44,7 @@ const processor = new SubstrateProcessor(database)
         {
             filter: [SwapNormal.events['NewWithdrawFee(uint256)'].topic],
         },
-        async () => {}
+        handleNewWithdrawFee
     )
     .addEvmLogHandler(
         Sirius4Pool,
