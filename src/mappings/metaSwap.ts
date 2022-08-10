@@ -2,7 +2,7 @@ import { getBalancesMetaSwap, getOrCreateMetaSwap } from '../entities/swap'
 import { getDailyTradeVolume, getHourlyTradeVolume, getWeeklyTradeVolume } from '../entities/volume'
 import { getDailyPoolTvl } from '../entities/tvl'
 import { getOrCreateToken } from '../entities/token'
-import { getSystemInfo } from '../entities/system'
+import { getSystemInfo, toSeconds } from '../entities/system'
 import { decodeHex, EvmLogHandlerContext, toHex } from '@subsquid/substrate-processor'
 import { Store } from '@subsquid/typeorm-store'
 import * as SwapNormal from '../abi/SwapNormal'
@@ -34,7 +34,7 @@ export async function handleNewAdminFee(ctx: EvmLogHandlerContext<Store>): Promi
     log.data.newFee = event.newAdminFee.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -55,7 +55,7 @@ export async function handleNewSwapFee(ctx: EvmLogHandlerContext<Store>): Promis
     log.data.newFee = event.newSwapFee.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -77,7 +77,7 @@ export async function handleRampA(ctx: EvmLogHandlerContext<Store>): Promise<voi
     log.data.futureTime = event.futureTime.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -99,7 +99,7 @@ export async function handleStopRampA(ctx: EvmLogHandlerContext<Store>): Promise
     log.data.time = event.time.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -123,12 +123,12 @@ export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Prom
     }
     swap.tvl = tvl.toFixed()
 
-    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     dailyTvl.tvl = tvl.toFixed()
     await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
     let apy: BigDecimal = BigDecimal('0')
     if (!tvl.eq(BigDecimal('0'))) {
@@ -152,7 +152,7 @@ export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Prom
     log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -176,12 +176,12 @@ export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): P
     }
     swap.tvl = tvl.toFixed()
 
-    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     dailyTvl.tvl = tvl.toFixed()
     await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
     let apy: BigDecimal = BigDecimal('0')
     if (!tvl.eq(BigDecimal('0'))) {
@@ -203,7 +203,7 @@ export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): P
     log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -227,12 +227,12 @@ export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>)
     }
     swap.tvl = tvl.toFixed()
 
-    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     dailyTvl.tvl = tvl.toFixed()
     await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
     let apy: BigDecimal = BigDecimal('0')
     if (!tvl.eq(BigDecimal('0'))) {
@@ -267,7 +267,7 @@ export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>)
     log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -291,12 +291,12 @@ export async function handleRemoveLiquidityImbalance(ctx: EvmLogHandlerContext<S
     }
     swap.tvl = tvl.toFixed()
 
-    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     dailyTvl.tvl = tvl.toFixed()
     await ctx.store.save(dailyTvl)
 
     // update APY
-    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+    let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
     let dailyTotalSwapFees = BigDecimal(dailyVolume.volume).times(swap.swapFee.toString()).div('10000000000')
     let apy: BigDecimal = BigDecimal('0')
     if (!tvl.eq(BigDecimal('0'))) {
@@ -324,7 +324,7 @@ export async function handleRemoveLiquidityImbalance(ctx: EvmLogHandlerContext<S
     log.data.lpTokenSupply = event.lpTokenSupply.toBigInt()
 
     log.block = BigInt(ctx.block.height)
-    log.timestamp = BigInt(ctx.block.timestamp)
+    log.timestamp = BigInt(toSeconds(ctx.block.timestamp))
     log.transaction = decodeHex(ctx.event.evmTxHash)
 
     await ctx.store.save(log)
@@ -353,7 +353,7 @@ export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise
         exchange.data.tokensBought = event.tokensBought.toBigInt()
 
         exchange.block = BigInt(ctx.block.height)
-        exchange.timestamp = BigInt(ctx.block.timestamp)
+        exchange.timestamp = BigInt(toSeconds(ctx.block.timestamp))
         exchange.transaction = decodeHex(ctx.event.evmTxHash)
 
         await ctx.store.save(exchange)
@@ -367,15 +367,15 @@ export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise
             let buyVolume = BigDecimal(event.tokensBought.toString()).div(Math.pow(10, Number(boughtToken.decimals)))
             let volume = sellVolume.plus(buyVolume).div(2)
 
-            let hourlyVolume = await getHourlyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+            let hourlyVolume = await getHourlyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
             hourlyVolume.volume = BigDecimal(hourlyVolume.volume).plus(volume).toFixed()
             await ctx.store.save(hourlyVolume)
 
-            let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+            let dailyVolume = await getDailyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
             dailyVolume.volume = BigDecimal(dailyVolume.volume).plus(volume).toFixed()
             await ctx.store.save(dailyVolume)
 
-            let weeklyVolume = await getWeeklyTradeVolume(ctx, swap, BigInt(ctx.block.timestamp))
+            let weeklyVolume = await getWeeklyTradeVolume(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
             weeklyVolume.volume = BigDecimal(weeklyVolume.volume).plus(volume).toFixed()
             await ctx.store.save(weeklyVolume)
 
@@ -385,13 +385,15 @@ export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise
                 let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
                 if (token !== null) {
                     let balance: BigInt = balances[i]
-                    let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(Math.pow(10, Number(token.decimals)))
+                    let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(
+                        Math.pow(10, Number(token.decimals))
+                    )
                     tvl = tvl.plus(balanceDecimal)
                 }
             }
             swap.tvl = tvl.toFixed()
 
-            let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(ctx.block.timestamp))
+            let dailyTvl = await getDailyPoolTvl(ctx, swap, BigInt(toSeconds(ctx.block.timestamp)))
             dailyTvl.tvl = tvl.toFixed()
             await ctx.store.save(dailyTvl)
 

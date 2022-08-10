@@ -3,6 +3,7 @@ import { Store } from '@subsquid/typeorm-store'
 import { Lock, LockSystemInfo } from '../model'
 
 import * as VotingEscrow from '../abi/VotingEscrow'
+import {toSeconds} from '../entities/system'
 
 export async function handleDeposit(ctx: EvmLogHandlerContext<Store>) {
     let event = VotingEscrow.events['Deposit(address,uint256,uint256,int128,uint256)'].decode(ctx.event.args)
@@ -40,7 +41,7 @@ export async function getLockInfo(ctx: EvmLogHandlerContext<Store>): Promise<Loc
         state.averageLockTime = 0n
     }
 
-    state.updated = BigInt(ctx.block.timestamp)
+    state.updated = BigInt(toSeconds(ctx.block.timestamp))
     state.updatedAtBlock = BigInt(ctx.block.height)
     state.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
 

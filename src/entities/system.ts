@@ -13,9 +13,13 @@ export async function getSystemInfo(ctx: EvmLogHandlerContext<Store>): Promise<S
         state.tokenCount = 0n
     }
 
-    state.updated = BigInt(ctx.block.timestamp)
+    state.updated = BigInt(toSeconds(ctx.block.timestamp))
     state.updatedAtBlock = BigInt(ctx.block.height)
     state.updatedAtTransaction = decodeHex(ctx.event.evmTxHash)
 
     return state as SystemInfo
+}
+
+export function toSeconds(timestamp: number) {
+    return Math.floor(timestamp / 1000)
 }
