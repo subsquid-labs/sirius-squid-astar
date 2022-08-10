@@ -4,9 +4,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -41,15 +41,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "previousOwner",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "OwnershipTransferred",
@@ -60,9 +60,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "Paused",
@@ -73,9 +73,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -104,9 +104,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -141,9 +141,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "buyer",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -184,9 +184,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "Unpaused",
@@ -199,7 +199,7 @@
       {
         "internalType": "contract ISwap",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -212,7 +212,7 @@
       {
         "internalType": "contract IERC20Upgradeable",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -225,7 +225,7 @@
       {
         "internalType": "contract IXSwap",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -296,7 +296,7 @@
       {
         "internalType": "contract IERC20Upgradeable",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -307,17 +307,17 @@
       {
         "internalType": "contract ISwap",
         "name": "_baseSwap",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "contract IXSwap",
         "name": "_metaSwap",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "contract IERC20Upgradeable",
         "name": "_metaLPToken",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "__XMetaSwapDeposit_init",
@@ -367,7 +367,7 @@
       {
         "internalType": "contract IERC20Upgradeable",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -497,7 +497,7 @@
       {
         "internalType": "contract IERC20Upgradeable",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -508,9 +508,9 @@
     "name": "owner",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -629,9 +629,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "transferOwnership",

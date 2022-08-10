@@ -25,31 +25,31 @@ function decodeEvent(signature: string, data: EvmEvent): any {
 }
 
 export const events = {
-  "Minted(Uint8Array,Uint8Array,uint256)": {
-    topic: abi.getEventTopic("Minted(Uint8Array,Uint8Array,uint256)"),
+  "Minted(address,address,uint256)": {
+    topic: abi.getEventTopic("Minted(address,address,uint256)"),
     decode(data: EvmEvent): Minted0Event {
-      return decodeEvent("Minted(Uint8Array,Uint8Array,uint256)", data)
+      return decodeEvent("Minted(address,address,uint256)", data)
     }
   }
   ,
-  "OwnershipTransferred(Uint8Array,Uint8Array)": {
-    topic: abi.getEventTopic("OwnershipTransferred(Uint8Array,Uint8Array)"),
+  "OwnershipTransferred(address,address)": {
+    topic: abi.getEventTopic("OwnershipTransferred(address,address)"),
     decode(data: EvmEvent): OwnershipTransferred0Event {
-      return decodeEvent("OwnershipTransferred(Uint8Array,Uint8Array)", data)
+      return decodeEvent("OwnershipTransferred(address,address)", data)
     }
   }
   ,
-  "Paused(Uint8Array)": {
-    topic: abi.getEventTopic("Paused(Uint8Array)"),
+  "Paused(address)": {
+    topic: abi.getEventTopic("Paused(address)"),
     decode(data: EvmEvent): Paused0Event {
-      return decodeEvent("Paused(Uint8Array)", data)
+      return decodeEvent("Paused(address)", data)
     }
   }
   ,
-  "Unpaused(Uint8Array)": {
-    topic: abi.getEventTopic("Unpaused(Uint8Array)"),
+  "Unpaused(address)": {
+    topic: abi.getEventTopic("Unpaused(address)"),
     decode(data: EvmEvent): Unpaused0Event {
-      return decodeEvent("Unpaused(Uint8Array)", data)
+      return decodeEvent("Unpaused(address)", data)
     }
   }
   ,
@@ -77,20 +77,20 @@ interface Chain  {
 export class Contract  {
   private readonly _chain: Chain
   private readonly blockHeight: number
-  readonly Uint8Array: string
+  readonly address: string
 
-  constructor(ctx: BlockContext, Uint8Array: string)
-  constructor(ctx: ChainContext, block: Block, Uint8Array: string)
-  constructor(ctx: BlockContext, blockOrUint8Array: Block | string, Uint8Array?: string) {
+  constructor(ctx: BlockContext, address: string)
+  constructor(ctx: ChainContext, block: Block, address: string)
+  constructor(ctx: BlockContext, blockOrAddress: Block | string, address?: string) {
     this._chain = ctx._chain
-    if (typeof blockOrUint8Array === 'string')  {
+    if (typeof blockOrAddress === 'string')  {
       this.blockHeight = ctx.block.height
-      this.Uint8Array = ethers.utils.getUint8Array(blockOrUint8Array)
+      this.address = ethers.utils.getAddress(blockOrAddress)
     }
     else  {
-      assert(Uint8Array != null)
-      this.blockHeight = blockOrUint8Array.height
-      this.Uint8Array = ethers.utils.getUint8Array(Uint8Array)
+      assert(address != null)
+      this.blockHeight = blockOrAddress.height
+      this.address = ethers.utils.getAddress(address)
     }
   }
 
@@ -121,7 +121,7 @@ export class Contract  {
   private async call(name: string, args: any[]) : Promise<any> {
     const fragment = abi.getFunction(name)
     const data = abi.encodeFunctionData(fragment, args)
-    const result = await this._chain.client.call('eth_call', [{to: this.Uint8Array, data}, this.blockHeight])
+    const result = await this._chain.client.call('eth_call', [{to: this.address, data}, this.blockHeight])
     const decoded = abi.decodeFunctionResult(fragment, result)
     return decoded.length > 1 ? decoded : decoded[0]
   }
@@ -134,15 +134,15 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "recipient",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": false,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "gauge",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": false,
@@ -159,15 +159,15 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "previousOwner",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "newOwner",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "OwnershipTransferred",
@@ -178,9 +178,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": false,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "account",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "Paused",
@@ -191,9 +191,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": false,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "account",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "Unpaused",
@@ -202,14 +202,14 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "_token",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "_controller",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "__Minter_init",
@@ -226,14 +226,14 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "allowedToMintFor",
@@ -252,9 +252,9 @@ function getJsonAbi(): any {
       "name": "controller",
       "outputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -263,9 +263,9 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "_gaugeAddr",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "mint",
@@ -276,14 +276,14 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "_gaugeAddr",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "_for",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "mintFor",
@@ -294,9 +294,9 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array[8]",
+          "internalType": "address[8]",
           "name": "_gaugeAddrs",
-          "type": "Uint8Array[8]"
+          "type": "address[8]"
         }
       ],
       "name": "mintMany",
@@ -307,14 +307,14 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "minted",
@@ -333,9 +333,9 @@ function getJsonAbi(): any {
       "name": "owner",
       "outputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -371,9 +371,9 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "_mintingUser",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "toggleApproveMint",
@@ -386,9 +386,9 @@ function getJsonAbi(): any {
       "name": "token",
       "outputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -397,9 +397,9 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "newOwner",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "transferOwnership",

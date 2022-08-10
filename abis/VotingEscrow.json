@@ -2,9 +2,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "tokenAddr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "string",
@@ -25,9 +25,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -62,15 +62,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "previousOwner",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "OwnershipTransferred",
@@ -100,9 +100,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -227,9 +227,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -251,9 +251,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "balanceOf",
@@ -270,9 +270,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -332,9 +332,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -385,9 +385,9 @@
     "name": "futureSmartWalletChecker",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -396,9 +396,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "getLastUserSlope",
@@ -441,9 +441,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "locked",
@@ -465,9 +465,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "locked__end",
@@ -499,9 +499,9 @@
     "name": "owner",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -512,9 +512,9 @@
     "name": "penaltyCollector",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -577,9 +577,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "setPenaltyCollector",
@@ -611,9 +611,9 @@
     "name": "smartWalletChecker",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -650,9 +650,9 @@
     "name": "token",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -712,9 +712,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "transferOwnership",
@@ -725,9 +725,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "userPointEpoch",
@@ -744,9 +744,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -783,9 +783,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",

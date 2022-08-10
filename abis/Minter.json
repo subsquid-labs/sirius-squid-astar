@@ -4,15 +4,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "recipient",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "gauge",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -29,15 +29,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "previousOwner",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "OwnershipTransferred",
@@ -48,9 +48,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "Paused",
@@ -61,9 +61,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "Unpaused",
@@ -72,14 +72,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_token",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_controller",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "__Minter_init",
@@ -96,14 +96,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "allowedToMintFor",
@@ -122,9 +122,9 @@
     "name": "controller",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -133,9 +133,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_gaugeAddr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "mint",
@@ -146,14 +146,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_gaugeAddr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_for",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "mintFor",
@@ -164,9 +164,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array[8]",
+        "internalType": "address[8]",
         "name": "_gaugeAddrs",
-        "type": "Uint8Array[8]"
+        "type": "address[8]"
       }
     ],
     "name": "mintMany",
@@ -177,14 +177,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "minted",
@@ -203,9 +203,9 @@
     "name": "owner",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -241,9 +241,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_mintingUser",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "toggleApproveMint",
@@ -256,9 +256,9 @@
     "name": "token",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -267,9 +267,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "transferOwnership",

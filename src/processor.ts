@@ -10,8 +10,6 @@ import {
 } from '@subsquid/substrate-processor'
 import { In } from 'typeorm'
 import { ethers } from 'ethers'
-import { CHAIN_NODE, contractUint8Array, getContractEntity } from './contract'
-import { Owner, Token, Transfer } from './model'
 import * as SwapNormal from './abi/SwapNormal'
 import { handleNewAdminFee, handleNewSwapFee } from './mappings/metaSwap'
 import {handleNewWithdrawFee} from "./mappings/swapNormal";

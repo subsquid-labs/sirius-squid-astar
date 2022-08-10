@@ -5,7 +5,7 @@ import { Lock, LockSystemInfo } from '../model'
 import * as VotingEscrow from '../abi/VotingEscrow'
 
 export async function handleDeposit(ctx: EvmLogHandlerContext<Store>) {
-    let event = VotingEscrow.events['Deposit(Uint8Array,uint256,uint256,int128,uint256)'].decode(ctx.event.args)
+    let event = VotingEscrow.events['Deposit(address,uint256,uint256,int128,uint256)'].decode(ctx.event.args)
 
     let endTime = event.locktime.toBigInt()
     let beginTime = event.ts.toBigInt()

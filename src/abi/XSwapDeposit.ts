@@ -31,52 +31,52 @@ function decodeEvent(signature: string, data: EvmEvent): any {
 }
 
 export const events = {
-  "AddLiquidity(Uint8Array,uint256[],uint256,uint256,uint256)": {
-    topic: abi.getEventTopic("AddLiquidity(Uint8Array,uint256[],uint256,uint256,uint256)"),
+  "AddLiquidity(address,uint256[],uint256,uint256,uint256)": {
+    topic: abi.getEventTopic("AddLiquidity(address,uint256[],uint256,uint256,uint256)"),
     decode(data: EvmEvent): AddLiquidity0Event {
-      return decodeEvent("AddLiquidity(Uint8Array,uint256[],uint256,uint256,uint256)", data)
+      return decodeEvent("AddLiquidity(address,uint256[],uint256,uint256,uint256)", data)
     }
   }
   ,
-  "OwnershipTransferred(Uint8Array,Uint8Array)": {
-    topic: abi.getEventTopic("OwnershipTransferred(Uint8Array,Uint8Array)"),
+  "OwnershipTransferred(address,address)": {
+    topic: abi.getEventTopic("OwnershipTransferred(address,address)"),
     decode(data: EvmEvent): OwnershipTransferred0Event {
-      return decodeEvent("OwnershipTransferred(Uint8Array,Uint8Array)", data)
+      return decodeEvent("OwnershipTransferred(address,address)", data)
     }
   }
   ,
-  "Paused(Uint8Array)": {
-    topic: abi.getEventTopic("Paused(Uint8Array)"),
+  "Paused(address)": {
+    topic: abi.getEventTopic("Paused(address)"),
     decode(data: EvmEvent): Paused0Event {
-      return decodeEvent("Paused(Uint8Array)", data)
+      return decodeEvent("Paused(address)", data)
     }
   }
   ,
-  "RemoveLiquidity(Uint8Array,uint256[2],uint256,uint256)": {
-    topic: abi.getEventTopic("RemoveLiquidity(Uint8Array,uint256[2],uint256,uint256)"),
+  "RemoveLiquidity(address,uint256[2],uint256,uint256)": {
+    topic: abi.getEventTopic("RemoveLiquidity(address,uint256[2],uint256,uint256)"),
     decode(data: EvmEvent): RemoveLiquidity0Event {
-      return decodeEvent("RemoveLiquidity(Uint8Array,uint256[2],uint256,uint256)", data)
+      return decodeEvent("RemoveLiquidity(address,uint256[2],uint256,uint256)", data)
     }
   }
   ,
-  "RemoveLiquidityOne(Uint8Array,uint256,uint256,uint256,uint256)": {
-    topic: abi.getEventTopic("RemoveLiquidityOne(Uint8Array,uint256,uint256,uint256,uint256)"),
+  "RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)": {
+    topic: abi.getEventTopic("RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)"),
     decode(data: EvmEvent): RemoveLiquidityOne0Event {
-      return decodeEvent("RemoveLiquidityOne(Uint8Array,uint256,uint256,uint256,uint256)", data)
+      return decodeEvent("RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)", data)
     }
   }
   ,
-  "TokenExchange(Uint8Array,uint256,uint256,uint256,uint256,uint256)": {
-    topic: abi.getEventTopic("TokenExchange(Uint8Array,uint256,uint256,uint256,uint256,uint256)"),
+  "TokenExchange(address,uint256,uint256,uint256,uint256,uint256)": {
+    topic: abi.getEventTopic("TokenExchange(address,uint256,uint256,uint256,uint256,uint256)"),
     decode(data: EvmEvent): TokenExchange0Event {
-      return decodeEvent("TokenExchange(Uint8Array,uint256,uint256,uint256,uint256,uint256)", data)
+      return decodeEvent("TokenExchange(address,uint256,uint256,uint256,uint256,uint256)", data)
     }
   }
   ,
-  "Unpaused(Uint8Array)": {
-    topic: abi.getEventTopic("Unpaused(Uint8Array)"),
+  "Unpaused(address)": {
+    topic: abi.getEventTopic("Unpaused(address)"),
     decode(data: EvmEvent): Unpaused0Event {
-      return decodeEvent("Unpaused(Uint8Array)", data)
+      return decodeEvent("Unpaused(address)", data)
     }
   }
   ,
@@ -104,20 +104,20 @@ interface Chain  {
 export class Contract  {
   private readonly _chain: Chain
   private readonly blockHeight: number
-  readonly Uint8Array: string
+  readonly address: string
 
-  constructor(ctx: BlockContext, Uint8Array: string)
-  constructor(ctx: ChainContext, block: Block, Uint8Array: string)
-  constructor(ctx: BlockContext, blockOrUint8Array: Block | string, Uint8Array?: string) {
+  constructor(ctx: BlockContext, address: string)
+  constructor(ctx: ChainContext, block: Block, address: string)
+  constructor(ctx: BlockContext, blockOrAddress: Block | string, address?: string) {
     this._chain = ctx._chain
-    if (typeof blockOrUint8Array === 'string')  {
+    if (typeof blockOrAddress === 'string')  {
       this.blockHeight = ctx.block.height
-      this.Uint8Array = ethers.utils.getUint8Array(blockOrUint8Array)
+      this.address = ethers.utils.getAddress(blockOrAddress)
     }
     else  {
-      assert(Uint8Array != null)
-      this.blockHeight = blockOrUint8Array.height
-      this.Uint8Array = ethers.utils.getUint8Array(Uint8Array)
+      assert(address != null)
+      this.blockHeight = blockOrAddress.height
+      this.address = ethers.utils.getAddress(address)
     }
   }
 
@@ -192,7 +192,7 @@ export class Contract  {
   private async call(name: string, args: any[]) : Promise<any> {
     const fragment = abi.getFunction(name)
     const data = abi.encodeFunctionData(fragment, args)
-    const result = await this._chain.client.call('eth_call', [{to: this.Uint8Array, data}, this.blockHeight])
+    const result = await this._chain.client.call('eth_call', [{to: this.address, data}, this.blockHeight])
     const decoded = abi.decodeFunctionResult(fragment, result)
     return decoded.length > 1 ? decoded : decoded[0]
   }
@@ -205,9 +205,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "provider",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": false,
@@ -242,15 +242,15 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "previousOwner",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "newOwner",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "OwnershipTransferred",
@@ -261,9 +261,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": false,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "account",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "Paused",
@@ -274,9 +274,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "provider",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": false,
@@ -305,9 +305,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "provider",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": false,
@@ -342,9 +342,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": true,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "buyer",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "indexed": false,
@@ -385,9 +385,9 @@ function getJsonAbi(): any {
       "inputs": [
         {
           "indexed": false,
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "account",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "Unpaused",
@@ -400,7 +400,7 @@ function getJsonAbi(): any {
         {
           "internalType": "contract ISwap",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -413,7 +413,7 @@ function getJsonAbi(): any {
         {
           "internalType": "contract IERC20Upgradeable",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -426,7 +426,7 @@ function getJsonAbi(): any {
         {
           "internalType": "contract IXSwap",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -497,7 +497,7 @@ function getJsonAbi(): any {
         {
           "internalType": "contract IERC20Upgradeable",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -508,17 +508,17 @@ function getJsonAbi(): any {
         {
           "internalType": "contract ISwap",
           "name": "_baseSwap",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "internalType": "contract IXSwap",
           "name": "_metaSwap",
-          "type": "Uint8Array"
+          "type": "address"
         },
         {
           "internalType": "contract IERC20Upgradeable",
           "name": "_metaLPToken",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "__XMetaSwapDeposit_init",
@@ -568,7 +568,7 @@ function getJsonAbi(): any {
         {
           "internalType": "contract IERC20Upgradeable",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -698,7 +698,7 @@ function getJsonAbi(): any {
         {
           "internalType": "contract IERC20Upgradeable",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -709,9 +709,9 @@ function getJsonAbi(): any {
       "name": "owner",
       "outputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -830,9 +830,9 @@ function getJsonAbi(): any {
     {
       "inputs": [
         {
-          "internalType": "Uint8Array",
+          "internalType": "address",
           "name": "newOwner",
-          "type": "Uint8Array"
+          "type": "address"
         }
       ],
       "name": "transferOwnership",

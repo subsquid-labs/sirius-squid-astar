@@ -24,7 +24,7 @@ export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Prom
     let swap = await getOrCreateXSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesXSwap(ctx, ctx.event.args.address, swap.numTokens)
 
-    const event = XSwapDeposit.events['AddLiquidity(Uint8Array,uint256[],uint256,uint256,uint256)'].decode(
+    const event = XSwapDeposit.events['AddLiquidity(address,uint256[],uint256,uint256,uint256)'].decode(
         ctx.event.args
     )
 
@@ -87,7 +87,7 @@ export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): P
     let swap = await getOrCreateXSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesXSwap(ctx, ctx.event.args.address, swap.numTokens)
 
-    const event = XSwapDeposit.events['RemoveLiquidity(Uint8Array,uint256[2],uint256,uint256)'].decode(ctx.event.args)
+    const event = XSwapDeposit.events['RemoveLiquidity(address,uint256[2],uint256,uint256)'].decode(ctx.event.args)
 
     let jpycPrice = event.price
     swap.balances = balances
@@ -146,7 +146,7 @@ export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>)
     let swap = await getOrCreateXSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesXSwap(ctx, ctx.event.args.address, swap.numTokens)
 
-    const event = XSwapDeposit.events['RemoveLiquidityOne(Uint8Array,uint256,uint256,uint256,uint256)'].decode(
+    const event = XSwapDeposit.events['RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)'].decode(
         ctx.event.args
     )
 
@@ -216,7 +216,7 @@ export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise
     let swap = await getOrCreateXSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesXSwap(ctx, ctx.event.args.address, swap.numTokens)
 
-    const event = XSwapDeposit.events['TokenExchange(Uint8Array,uint256,uint256,uint256,uint256,uint256)'].decode(
+    const event = XSwapDeposit.events['TokenExchange(address,uint256,uint256,uint256,uint256,uint256)'].decode(
         ctx.event.args
     )
 

@@ -4,15 +4,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "owner",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "spender",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -29,9 +29,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -48,15 +48,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "previousOwner",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "OwnershipTransferred",
@@ -67,9 +67,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "Paused",
@@ -80,15 +80,15 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "from",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "to",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -105,9 +105,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "Unpaused",
@@ -118,9 +118,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "user",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -155,9 +155,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "provider",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "indexed": false,
@@ -174,9 +174,9 @@
     "name": "GAUGE_CONTROLLER",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -200,9 +200,9 @@
     "name": "MINTER",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -226,9 +226,9 @@
     "name": "SRS",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -252,9 +252,9 @@
     "name": "VOTING_ESCROW",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -276,29 +276,29 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_lpToken",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_minter",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_srs",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_veToken",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_gaugeCtrl",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "__LiquidityGauge_init",
@@ -309,14 +309,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_rewardToken",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_distributor",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "addReward",
@@ -327,14 +327,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "owner",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "spender",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "allowance",
@@ -351,9 +351,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "spender",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -375,9 +375,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "balanceOf",
@@ -407,9 +407,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "account",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -425,14 +425,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "claimData",
@@ -449,14 +449,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_receiver",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "claimRewards",
@@ -467,14 +467,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_user",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_rewardToken",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "claimableReward",
@@ -491,9 +491,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "claimableTokens",
@@ -510,14 +510,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_token",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "claimedReward",
@@ -547,9 +547,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "spender",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -576,9 +576,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "bool",
@@ -594,9 +594,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_rewardToken",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -625,9 +625,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "spender",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -675,9 +675,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "integrateCheckpointOf",
@@ -694,9 +694,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "integrateFraction",
@@ -732,9 +732,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "integrateInvSupplyOf",
@@ -764,9 +764,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "kick",
@@ -779,9 +779,9 @@
     "name": "lpToken",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -805,9 +805,9 @@
     "name": "owner",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -888,22 +888,22 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "rewardData",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "token",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "distributor",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -932,14 +932,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "rewardIntegralFor",
@@ -964,9 +964,9 @@
     "name": "rewardTokens",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -975,17 +975,17 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "rewardsReceiver",
     "outputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1007,14 +1007,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_rewardToken",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_distributor",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "setRewardDistributor",
@@ -1025,9 +1025,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_receiver",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "setRewardsReceiver",
@@ -1064,9 +1064,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_to",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -1088,14 +1088,14 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "sender",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "recipient",
-        "type": "Uint8Array"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -1117,9 +1117,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "newOwner",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "transferOwnership",
@@ -1137,9 +1137,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "_addr",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "userCheckpoint",
@@ -1174,9 +1174,9 @@
   {
     "inputs": [
       {
-        "internalType": "Uint8Array",
+        "internalType": "address",
         "name": "",
-        "type": "Uint8Array"
+        "type": "address"
       }
     ],
     "name": "workingBalances",

@@ -11,7 +11,7 @@
   {
     "constant": false,
     "inputs": [
-      { "name": "_spender", "type": "Uint8Array" },
+      { "name": "_spender", "type": "address" },
       { "name": "_value", "type": "uint256" }
     ],
     "name": "approve",
@@ -32,8 +32,8 @@
   {
     "constant": false,
     "inputs": [
-      { "name": "_from", "type": "Uint8Array" },
-      { "name": "_to", "type": "Uint8Array" },
+      { "name": "_from", "type": "address" },
+      { "name": "_to", "type": "address" },
       { "name": "_value", "type": "uint256" }
     ],
     "name": "transferFrom",
@@ -53,7 +53,7 @@
   },
   {
     "constant": true,
-    "inputs": [{ "name": "_owner", "type": "Uint8Array" }],
+    "inputs": [{ "name": "_owner", "type": "address" }],
     "name": "balanceOf",
     "outputs": [{ "name": "balance", "type": "uint256" }],
     "payable": false,
@@ -72,7 +72,7 @@
   {
     "constant": false,
     "inputs": [
-      { "name": "_to", "type": "Uint8Array" },
+      { "name": "_to", "type": "address" },
       { "name": "_value", "type": "uint256" }
     ],
     "name": "transfer",
@@ -84,8 +84,8 @@
   {
     "constant": true,
     "inputs": [
-      { "name": "_owner", "type": "Uint8Array" },
-      { "name": "_spender", "type": "Uint8Array" }
+      { "name": "_owner", "type": "address" },
+      { "name": "_spender", "type": "address" }
     ],
     "name": "allowance",
     "outputs": [{ "name": "", "type": "uint256" }],
@@ -97,8 +97,8 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "name": "owner", "type": "Uint8Array" },
-      { "indexed": true, "name": "spender", "type": "Uint8Array" },
+      { "indexed": true, "name": "owner", "type": "address" },
+      { "indexed": true, "name": "spender", "type": "address" },
       { "indexed": false, "name": "value", "type": "uint256" }
     ],
     "name": "Approval",
@@ -107,8 +107,8 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "name": "from", "type": "Uint8Array" },
-      { "indexed": true, "name": "to", "type": "Uint8Array" },
+      { "indexed": true, "name": "from", "type": "address" },
+      { "indexed": true, "name": "to", "type": "address" },
       { "indexed": false, "name": "value", "type": "uint256" }
     ],
     "name": "Transfer",

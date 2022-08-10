@@ -79,48 +79,53 @@ export async function getOrCreateSwap(ctx: EvmLogHandlerContext<Store>): Promise
 
 // TODO refactor
 // Gets poll info from swap contract
-export async function getSwapInfo(swap: Uint8Array): SwapInfo {
-    let swapContract = new SwapNormal.Contract()
+export async function getSwapInfo(ctx: EvmLogHandlerContext<Store>, address: string): Promise<SwapInfo> {
+    let swapContract = new SwapNormal.Contract(ctx, address)
 
-    let tokens: Uint8Array[] = []
+    let tokens: string[] = []
     let balances: bigint[] = []
-
-    let t: ethereum.CallResult<Uint8Array>
-    let b: ethereum.CallResult<bigint>
 
     let i = 0
 
-    do {
-        t = swapContract.try_getToken(i)
-        b = swapContract.try_getTokenBalance(i)
+    while (true) {
+        try {
+            const t = await swapContract.getToken(i)
+            const b = (await swapContract.getTokenBalance(i)).toBigInt()
 
-        if (!t.reverted && t.value.toHexString() != ZERO_Uint8Array) {
-            tokens.push(t.value)
+            if (t != ZERO_Uint8Array) {
+                tokens.push(t)
+            }
+
+            balances.push(b)
+
+            i++
+        } catch (e) {
+            break
         }
+    }
 
-        if (!b.reverted) {
-            balances.push(b.value)
-        }
-
-        i++
-    } while (!t.reverted && !b.reverted)
+    let swapStorage = await swapContract.swapStorage()
 
     return {
-        baseSwapUint8Array: swap,
+        baseSwapAddress: address,
         tokens,
         baseTokens: tokens,
         allTokens: tokens,
         balances,
-        A: (await swapContract.getA()).toBigInt(),
-        swapFee: swapContract.swapStorage().value4,
-        adminFee: swapContract.swapStorage().value5,
-        virtualPrice: swapContract.getVirtualPrice(),
-        owner: swapContract.owner(),
-        lpToken: swapContract.swapStorage().value6,
+        a: (await swapContract.getA()).toBigInt(),
+        swapFee: swapStorage[4].toBigInt(),
+        adminFee: swapStorage[5].toBigInt(),
+        virtualPrice: (await swapContract.getVirtualPrice()).toBigInt(),
+        owner: await swapContract.owner(),
+        lpToken: swapStorage[6],
     }
 }
 
-export async function getBalancesSwap(ctx: EvmLogHandlerContext<Store>, swap: string, N_COINS: number): Promise<bigint[]> {
+export async function getBalancesSwap(
+    ctx: EvmLogHandlerContext<Store>,
+    swap: string,
+    N_COINS: number
+): Promise<bigint[]> {
     let swapContract = new SwapNormal.Contract(ctx, swap)
     let balances: bigint[] = new Array(N_COINS)
 
@@ -130,7 +135,6 @@ export async function getBalancesSwap(ctx: EvmLogHandlerContext<Store>, swap: st
 
     return balances
 }
-
 
 export async function getOrCreateMetaSwap(ctx: EvmLogHandlerContext<Store>): Promise<Swap> {
     const address = ctx.event.args.address
@@ -333,8 +337,6 @@ export async function getXSwapInfo(ctx: EvmLogHandlerContext<Store>, swap: strin
     // get the lp token bounded basepool tokens
     let baseSwapAddress = await swapContract.BASE_POOL()
     let baseSwapContract = new SwapNormal.Contract(ctx, baseSwapAddress)
-
-    let j = 0
 
     let j = 0
 
