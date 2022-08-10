@@ -38,7 +38,7 @@ export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Prom
         let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
             let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(Math.pow(10, Number(token.decimals)))
             if (toHex(tokens[i].address) == JPYC_ADDRESS) {
                 tvl = tvl.plus(balanceDecimal.times(BigDecimal(jpycPrice.toString())))
             } else {
@@ -99,7 +99,7 @@ export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): P
         let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
             let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(Math.pow(10, Number(token.decimals)))
             if (toHex(tokens[i].address) == JPYC_ADDRESS) {
                 tvl = tvl.plus(balanceDecimal.times(BigDecimal(jpycPrice.toString())))
             } else {
@@ -160,7 +160,7 @@ export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>)
         let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
         if (token !== null) {
             let balance: BigInt = balances[i]
-            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
+            let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(Math.pow(10, Number(token.decimals)))
             if (toHex(tokens[i].address) == JPYC_ADDRESS) {
                 tvl = tvl.plus(balanceDecimal.times(BigDecimal(jpycPrice.toString())))
             } else {
@@ -246,13 +246,13 @@ export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise
         let tokens = swap.tokens
         if (event.soldId.toNumber() < tokens.length && event.boughtId.toNumber() < tokens.length) {
             let soldToken = await getOrCreateToken(ctx, toHex(tokens[event.soldId.toNumber()].address))
-            let sellVolume = BigDecimal(event.tokensSold.toString()).div(soldToken.decimals.toString())
+            let sellVolume = BigDecimal(event.tokensSold.toString()).div(Math.pow(10, Number(soldToken.decimals)))
             if (toHex(tokens[event.soldId.toNumber()].address) == JPYC_ADDRESS) {
                 sellVolume = sellVolume.times(new BigDecimal(jpycPrice.toString()))
             }
 
             let boughtToken = await getOrCreateToken(ctx, toHex(tokens[event.boughtId.toNumber()].address))
-            let buyVolume = BigDecimal(event.tokensBought.toString()).div(boughtToken.decimals.toString())
+            let buyVolume = BigDecimal(event.tokensBought.toString()).div(Math.pow(10, Number(boughtToken.decimals)))
             if (toHex(tokens[event.boughtId.toNumber()].address) == JPYC_ADDRESS) {
                 buyVolume = buyVolume.times(new BigDecimal(jpycPrice.toString()))
             }
@@ -277,7 +277,7 @@ export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise
                 let token = await getOrCreateToken(ctx, toHex(tokens[i].address))
                 if (token !== null) {
                     let balance: BigInt = balances[i]
-                    let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(token.decimals.toString())
+                    let balanceDecimal: BigDecimal = BigDecimal(balance.toString()).div(Math.pow(10, Number(token.decimals)))
                     if (toHex(tokens[event.boughtId.toNumber()].address) == JPYC_ADDRESS) {
                         tvl = tvl.plus(balanceDecimal.times(BigDecimal(jpycPrice.toString())))
                     } else {
