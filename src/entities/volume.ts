@@ -7,7 +7,7 @@ export async function getHourlyTradeVolume(
     swap: Swap,
     timestamp: bigint
 ): Promise<HourlyVolume> {
-    let interval = BigInt(60 * 60 * 24)
+    let interval = BigInt(60 * 60)
     let day = (timestamp / interval) * interval
     let id = swap.id + '-hour-' + day.toString()
 
@@ -49,7 +49,7 @@ export async function getWeeklyTradeVolume(
     swap: Swap,
     timestamp: bigint
 ): Promise<WeeklyVolume> {
-    let interval = BigInt(60 * 60 * 24)
+    let interval = BigInt(60 * 60 * 24 * 7)
     let day = (timestamp / interval) * interval
     let id = swap.id + '-week-' + day.toString()
 
