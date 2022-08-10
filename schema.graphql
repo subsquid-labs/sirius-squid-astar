@@ -13,11 +13,11 @@ type SystemInfo @entity {
 type Swap @entity {
   id: ID!
 
-  # swap Uint8Array
-  Uint8Array: Bytes!
+  # swap address
+  address: Bytes!
 
-  # base swap Uint8Array
-  baseSwapUint8Array: Bytes!
+  # base swap address
+  baseSwapaddress: Bytes!
 
   # number of tokens supported
   numTokens: Int!
@@ -46,7 +46,7 @@ type Swap @entity {
 
   virtualPrice: BigInt!
 
-  # owner Uint8Array
+  # owner address
   owner: Bytes!
 
   events: [SwapEvent!] @derivedFrom(field: "swap")
@@ -211,14 +211,14 @@ type TokenExchangeUnderlyingData {
 
 type Token @entity {
   id: ID!
-  Uint8Array: Bytes!
+  address: Bytes!
   decimals: BigInt!
   name: String
   symbol: String
 }
 
 type TokenObject {
-  Uint8Array: Bytes!
+  address: Bytes!
   decimals: BigInt!
   name: String
   symbol: String
@@ -226,7 +226,7 @@ type TokenObject {
 
 type Lock @entity {
   id: ID!
-  Uint8Array: Bytes!
+  address: Bytes!
   amount: BigInt!
   end: BigInt!
 }
@@ -243,7 +243,7 @@ type LockSystemInfo @entity {
 
 type Airdropee @entity {
   id: ID!
-  Uint8Array: Bytes!
+  address: Bytes!
   count: BigInt!
 
   swapCount: BigInt!

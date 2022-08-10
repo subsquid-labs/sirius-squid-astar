@@ -1,5 +1,6 @@
 import {
-    AddLiquidityEventData, Exchange,
+    AddLiquidityEventData,
+    Exchange,
     NewAdminFeeEventData,
     NewSwapFeeEventData,
     RampAEventData,
@@ -26,7 +27,7 @@ import { Store } from '@subsquid/typeorm-store'
 import * as SwapNormal from '../abi/SwapNormal'
 
 export async function handleNewAdminFee(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
 
     const event = SwapNormal.events['NewAdminFee(uint256)'].decode(ctx.event.args)
     swap.adminFee = event.newAdminFee.toBigInt()
@@ -47,7 +48,7 @@ export async function handleNewAdminFee(ctx: EvmLogHandlerContext<Store>): Promi
 }
 
 export async function handleNewSwapFee(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
 
     const event = SwapNormal.events['NewSwapFee(uint256)'].decode(ctx.event.args)
     swap.swapFee = event.newSwapFee.toBigInt()
@@ -68,7 +69,7 @@ export async function handleNewSwapFee(ctx: EvmLogHandlerContext<Store>): Promis
 }
 
 export async function handleNewWithdrawFee(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
 
     const event = SwapNormal.events['NewWithdrawFee(uint256)'].decode(ctx.event.args)
     swap.withdrawFee = event.newWithdrawFee.toBigInt()
@@ -87,7 +88,7 @@ export async function handleNewWithdrawFee(ctx: EvmLogHandlerContext<Store>): Pr
 }
 
 export async function handleRampA(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
 
     const event = SwapNormal.events['RampA(uint256,uint256,uint256,uint256)'].decode(ctx.event.args)
 
@@ -109,7 +110,7 @@ export async function handleRampA(ctx: EvmLogHandlerContext<Store>): Promise<voi
 }
 
 export async function handleStopRampA(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
 
     const event = SwapNormal.events['StopRampA(uint256,uint256)'].decode(ctx.event.args)
     swap.a = event.currentA.toBigInt()
@@ -131,7 +132,7 @@ export async function handleStopRampA(ctx: EvmLogHandlerContext<Store>): Promise
 }
 
 export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
@@ -195,7 +196,7 @@ export async function handleAddLiquidity(ctx: EvmLogHandlerContext<Store>): Prom
 }
 
 export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
@@ -257,7 +258,7 @@ export async function handleRemoveLiquidity(ctx: EvmLogHandlerContext<Store>): P
 }
 
 export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
@@ -332,7 +333,7 @@ export async function handleRemoveLiquidityOne(ctx: EvmLogHandlerContext<Store>)
 }
 
 export async function handleRemoveLiquidityImbalance(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
 
@@ -400,7 +401,7 @@ export async function handleRemoveLiquidityImbalance(ctx: EvmLogHandlerContext<S
 }
 
 export async function handleTokenSwap(ctx: EvmLogHandlerContext<Store>): Promise<void> {
-    let swap = await getOrCreateSwap(ctx)
+    let swap = await getOrCreateSwap(ctx, ctx.event.args.address)
     let balances = await getBalancesSwap(ctx, ctx.event.args.address, swap.numTokens)
     swap.balances = balances
     await ctx.store.save(swap)

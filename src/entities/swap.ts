@@ -37,9 +37,7 @@ interface SwapInfo {
     lpToken: string
 }
 
-export async function getOrCreateSwap(ctx: EvmLogHandlerContext<Store>): Promise<Swap> {
-    const address = ctx.event.args.address
-
+export async function getOrCreateSwap(ctx: EvmLogHandlerContext<Store>, address: string): Promise<Swap> {
     let swap = await ctx.store.get(Swap, address)
 
     if (swap == null) {
