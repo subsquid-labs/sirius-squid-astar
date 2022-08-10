@@ -24,8 +24,8 @@ const database = new TypeormDatabase()
 const processor = new SubstrateBatchProcessor()
     .setBatchSize(100)
     .setDataSource({
-        chain: 'wss://astar.api.onfinality.io/public-ws',
         archive: lookupArchive('astar', { release: 'FireSquid' }),
+        chain: 'wss://rpc.pinknode.io/astar/6e3fa591-e24f-483a-95fa-1d773f7f2be3',
     })
 
     // Sirius4Pool
